@@ -44,6 +44,7 @@ public class Program
     // Collectible properties
     static List<Vector2> collectibles = new List<Vector2>();
     static float collectibleRadius = 15f;
+    static int score = 0; // Player score
 
     static bool playerHurt = false;
 
@@ -154,11 +155,11 @@ public class Program
             if (Raylib.CheckCollisionCircles(PlayerPosition, PlayerRadius, collectibles[i], collectibleRadius))
             {
                 collectibles.RemoveAt(i); // Remove collectible if collected
+                score++; // Increment score
             }
         }
 
         // Draw Saws
-        // Draw saws
         foreach (var saw in saws)
         {
             Raylib.DrawRectanglePro(
@@ -177,12 +178,19 @@ public class Program
         {
             Raylib.DrawCircleV(collectible, collectibleRadius, Color.Gold);
         }
+
+        DrawScore();
     }
 
    static void DrawPlayer(Vector2 position, Color color)
     {
 
         Raylib.DrawCircleV(position, PlayerRadius, color);
+    }
+
+    static void DrawScore()
+    {
+        Raylib.DrawText($"Score: {score}", 10, 10, 40, Color.White);
     }
 
 }
