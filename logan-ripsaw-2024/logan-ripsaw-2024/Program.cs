@@ -28,6 +28,10 @@ public class Program
     static float sawRotation = 0f; // Saw rotation angle
     static float sawRotationSpeed = 160f; // Degrees per second
 
+    // Collectible properties
+    static List<Vector2> collectibles = new List<Vector2>();
+    static float collectibleRadius = 15f;
+
     static bool playerHurt = false;
 
 
@@ -59,6 +63,10 @@ public class Program
     static void Setup()
     {
         // Your one-time setup code here
+        // Initialize collectible positions
+        collectibles.Add(new Vector2(200, 200));
+        collectibles.Add(new Vector2(600, 500));
+        collectibles.Add(new Vector2(800, 300));
     }
 
     static void Update()
@@ -120,6 +128,15 @@ public class Program
             playerHurt = false;
         }
 
+        // Check for collision with collectibles
+        for (int i = collectibles.Count - 1; i >= 0; i--)
+        {
+            if (Raylib.CheckCollisionCircles(PlayerPosition, PlayerRadius, collectibles[i], collectibleRadius))
+            {
+                collectibles.RemoveAt(i); // Remove collectible if collected
+            }
+        }
+
         // Draw Saws
         Raylib.DrawRectanglePro(
            new Rectangle(sawPosition.X, sawPosition.Y, sawSize.X, sawSize.Y),
@@ -129,13 +146,19 @@ public class Program
        );
 
         // Draw player
-        // Draw player (bunny shape)
         DrawPlayer(PlayerPosition, playerHurt ? Color.Red : Color.RayWhite);
+
+        // Draw collectibles
+        foreach (var collectible in collectibles)
+        {
+            Raylib.DrawCircleV(collectible, collectibleRadius, Color.Gold);
+        }
     }
 
-    static void DrawPlayer(Vector2 position, Color color)
+   static void DrawPlayer(Vector2 position, Color color)
     {
-       
+
         Raylib.DrawCircleV(position, PlayerRadius, color);
     }
+
 }
