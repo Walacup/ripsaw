@@ -5,6 +5,9 @@ using System.Numerics;
 public static class CustomColors
 { 
     public static Color GameBackgroundColor = new Color(0, 10, 11, 255);
+    public static Color CustomGreenColor = new Color(78, 133, 110, 255); // Color #4e856e
+    public static Color CustomDarkPurpleColor = new Color(38, 11, 38, 255); // Color #260B26
+    public static Color CustomLightGreenColor = new Color(187, 242, 172, 255); // Color #BBF2AC
 }
 public class Program
 {
@@ -21,9 +24,9 @@ public class Program
 
     // Saw properties
     static Vector2 sawPosition = new Vector2(400, 300);
-    static Vector2 sawSize = new Vector2(50, 50);
+    static Vector2 sawSize = new Vector2(20, 200);
     static float sawRotation = 0f; // Saw rotation angle
-    static float sawRotationSpeed = 90f; // Degrees per second
+    static float sawRotationSpeed = 160f; // Degrees per second
 
     static bool playerHurt = false;
 
@@ -41,7 +44,7 @@ public class Program
             // Enable drawing to the canvas (window)
             Raylib.BeginDrawing();
             // Clear the canvas with one color
-            Raylib.ClearBackground(CustomColors.GameBackgroundColor);
+            Raylib.ClearBackground(CustomColors.CustomDarkPurpleColor);
             // Your game code here. This is a function YOU define.
 
             Update();
@@ -124,7 +127,7 @@ public class Program
            new Rectangle(sawPosition.X, sawPosition.Y, sawSize.X, sawSize.Y),
            new Vector2(sawSize.X / 2, sawSize.Y / 2),
            sawRotation,
-           Color.Gray
+           CustomColors.CustomLightGreenColor
        );
 
         // Draw player
