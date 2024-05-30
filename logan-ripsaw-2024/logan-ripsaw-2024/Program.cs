@@ -14,10 +14,16 @@ public class Program
     static int screenHeight = 1000; // Screen height
     static int targetFps = 60; // Target frames-per-second
 
-    // Define the rectangle's properties
+    // Player properties
     static Vector2 PlayerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
     static Vector2 PlayerSize = new Vector2(50, 50);
     static float speed = 600f;
+
+    // Saw properties
+    static Vector2 sawPosition = new Vector2(400, 300);
+    static Vector2 sawSize = new Vector2(50, 50);
+
+    static bool playerHurt = false;
 
     static void Main()
     {
@@ -92,7 +98,24 @@ public class Program
 
         }
 
-            Raylib.DrawRectangleV(PlayerPosition, PlayerSize, Color.RayWhite);
-        
+
+        // Check for collision with the saw
+        if (Raylib.CheckCollisionRecs(
+           new Rectangle(PlayerPosition.X, PlayerPosition.Y, PlayerSize.X, PlayerSize.Y),
+           new Rectangle(sawPosition.X, sawPosition.Y, sawSize.X, sawSize.Y)))
+        {
+            playerHurt = true;
+        }
+        else
+        {
+            playerHurt = false;
+        }
+
+        // Draw Saw
+        Raylib.DrawRectangleV(sawPosition, sawSize, Color.Gray);
+
+        // Draw player
+        Raylib.DrawRectangleV(PlayerPosition, PlayerSize, playerHurt ? Color.Red : Color.RayWhite);
+
     }
 }
