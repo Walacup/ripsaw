@@ -1,12 +1,22 @@
 ﻿using Raylib_cs;
 using System.Numerics;
 
+
+public static class CustomColors
+{
+    public static Color LightPurple = new Color(191, 144, 245, 255);
+    public static Color DarkOrange = new Color(255, 140, 0, 255);
+    public static Color SkyBlue = new Color(135, 206, 235, 255);
+    public static Color ForestGreen = new Color(34, 139, 34, 255);
+    public static Color MidnightBlue = new Color(25, 25, 112, 255);
+    public static Color GameBackgroundColor = new Color(0, 10, 11, 255);
+}
 public class Program
 {
     // If you need variables in the Program class (outside functions), you must mark them as static
     static string title = "Ripsaw"; // Window title
-    static int screenWidth = 800; // Screen width
-    static int screenHeight = 600; // Screen height
+    static int screenWidth = 1300; // Screen width
+    static int screenHeight = 1000; // Screen height
     static int targetFps = 60; // Target frames-per-second
 
     static void Main()
@@ -23,8 +33,9 @@ public class Program
             // Enable drawing to the canvas (window)
             Raylib.BeginDrawing();
             // Clear the canvas with one color
-            Raylib.ClearBackground(Color.Beige);
+            Raylib.ClearBackground(CustomColors.GameBackgroundColor);
             // Your game code here. This is a function YOU define.
+
             Update();
             // Stop drawing to the canvas, begin displaying the frame
             Raylib.EndDrawing();
