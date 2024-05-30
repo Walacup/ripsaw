@@ -12,7 +12,7 @@ public static class CustomColors
 public class Program
 {
     // If you need variables in the Program class (outside functions), you must mark them as static
-    static string title = "Ripsaw"; // Window title
+    static string title = "Stupid Game"; // Window title
     static int screenWidth = 1300; // Screen width
     static int screenHeight = 1000; // Screen height
     static int targetFps = 60; // Target frames-per-second
@@ -21,6 +21,7 @@ public class Program
     static Vector2 PlayerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
     static float PlayerRadius = 25f;
     static float speed = 600f;
+    static int playerHealth = 100;
 
     // Saw properties
     class Saw
@@ -53,7 +54,7 @@ public class Program
         Color.Black
     };
 
-    static float colorChangeSpeed = 4.0f; // Speed at which colors change
+    static float colorChangeSpeed = 1.4f; // Speed at which colors change
 
     static bool playerHurt = false;
 
@@ -88,20 +89,22 @@ public class Program
         // Your one-time setup code here
 
         // Initialize saw positions
-        saws.Add(new Saw(new Vector2(200, 300), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(700, 175), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(500, 600), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(800, 800), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(600, 900), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(215, 340), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(760, 175), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(512, 650), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(873, 809), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(600, 850), new Vector2(20, 60), 700f));
 
         // Initialize collectible positions
-        collectibles.Add(new Vector2(200, 200));
-        collectibles.Add(new Vector2(500, 500));
-        collectibles.Add(new Vector2(800, 300));
-        collectibles.Add(new Vector2(700, 100));
-        collectibles.Add(new Vector2(400, 400));
-        collectibles.Add(new Vector2(340, 310));
-        collectibles.Add(new Vector2(700, 800));
+        collectibles.Add(new Vector2(290, 200));
+        collectibles.Add(new Vector2(570, 580));
+        collectibles.Add(new Vector2(867, 300));
+        collectibles.Add(new Vector2(780, 100));
+        collectibles.Add(new Vector2(423, 403));
+        collectibles.Add(new Vector2(140, 310));
+        collectibles.Add(new Vector2(707, 840));
+        collectibles.Add(new Vector2(110, 800));
+        collectibles.Add(new Vector2(400, 700));
     }
 
     static void Update()
@@ -159,6 +162,7 @@ public class Program
             if (Raylib.CheckCollisionCircleRec(PlayerPosition, PlayerRadius, new Rectangle(saw.Position.X - saw.Size.X / 2, saw.Position.Y - saw.Size.Y / 2, saw.Size.X, saw.Size.Y)))
             {
                 playerHurt = true;
+                playerHealth -= 1; // Decrease health when colliding with a saw
             }
         }
 
@@ -196,9 +200,10 @@ public class Program
         }
 
         DrawScore();
+        DrawHealthBar();
     }
 
-   static void DrawPlayer(Vector2 position, Color color)
+    static void DrawPlayer(Vector2 position, Color color)
     {
 
         Raylib.DrawCircleV(position, PlayerRadius, color);
@@ -207,6 +212,21 @@ public class Program
     static void DrawScore()
     {
         Raylib.DrawText($"Score: {score}", 10, 10, 80, Color.White);
+    }
+
+    static void DrawHealthBar()
+    {
+        int barWidth = 400;
+        int barHeight = 40;
+        int barX = 10;
+        int barY = 100;
+
+        // Draw background
+        Raylib.DrawRectangle(barX, barY, barWidth, barHeight, Color.Gray);
+
+        // Draw health
+        int healthWidth = (int)((playerHealth / 100.0f) * barWidth);
+        Raylib.DrawRectangle(barX, barY, healthWidth, barHeight, Color.Red);
     }
 
 }
