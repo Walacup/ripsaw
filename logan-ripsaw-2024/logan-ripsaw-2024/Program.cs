@@ -22,6 +22,8 @@ public class Program
     // Saw properties
     static Vector2 sawPosition = new Vector2(400, 300);
     static Vector2 sawSize = new Vector2(50, 50);
+    static float sawRotation = 0f; // Saw rotation angle
+    static float sawRotationSpeed = 90f; // Degrees per second
 
     static bool playerHurt = false;
 
@@ -98,6 +100,12 @@ public class Program
 
         }
 
+        // Saw rotation
+        sawRotation += sawRotationSpeed * deltaTime;
+        if (sawRotation > 360f)
+        {
+            sawRotation -= 360f;
+        }
 
         // Check for collision with the saw
         if (Raylib.CheckCollisionRecs(
@@ -111,8 +119,13 @@ public class Program
             playerHurt = false;
         }
 
-        // Draw Saw
-        Raylib.DrawRectangleV(sawPosition, sawSize, Color.Gray);
+        // Draw Saws
+        Raylib.DrawRectanglePro(
+           new Rectangle(sawPosition.X, sawPosition.Y, sawSize.X, sawSize.Y),
+           new Vector2(sawSize.X / 2, sawSize.Y / 2),
+           sawRotation,
+           Color.Gray
+       );
 
         // Draw player
         Raylib.DrawRectangleV(PlayerPosition, PlayerSize, playerHurt ? Color.Red : Color.RayWhite);
