@@ -8,6 +8,10 @@ public static class CustomColors
     public static Color CustomGreenColor = new Color(78, 133, 110, 255); // Color #4e856e
     public static Color CustomDarkPurpleColor = new Color(38, 11, 38, 255); // Color #260B26
     public static Color CustomLightGreenColor = new Color(187, 242, 172, 255); // Color #BBF2AC
+    public static Color CustomBlueColor = new Color(52, 232, 235, 255); // Color #34e8eb
+    public static Color CustomPinkColor = new Color(255, 0, 208, 255); // Color #ff00d0
+    public static Color CustomYellowColor = new Color(251, 255, 0, 255); // Color #fbff00
+    public static Color CustomOrangeColor = new Color(219, 119, 4, 255); // Color #db7704
 }
 public class Program
 {
@@ -51,10 +55,12 @@ public class Program
     static List<Color> collectibleColors = new List<Color>
     {
         Color.Gold,
-        Color.Black
+        Color.Red,
+        Color.Green,
+        Color.Blue
     };
 
-    static float colorChangeSpeed = 1.4f; // Speed at which colors change
+    static float colorChangeSpeed = 5.0f; // Speed at which colors change
 
     static bool playerHurt = false;
     static bool gameOver = false;
@@ -103,11 +109,14 @@ public class Program
         // Your one-time setup code here
 
         // Initialize saw positions
-        saws.Add(new Saw(new Vector2(215, 340), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(315, 340), new Vector2(20, 60), 700f));
         saws.Add(new Saw(new Vector2(760, 175), new Vector2(20, 60), 700f));
         saws.Add(new Saw(new Vector2(512, 650), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(873, 809), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(600, 850), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(1223, 209), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(800, 850), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(200, 550), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(800, 500), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(1100, 800), new Vector2(20, 60), 700f));
 
         // Initialize collectible positions
         collectibles.Add(new Vector2(290, 200));
@@ -115,10 +124,11 @@ public class Program
         collectibles.Add(new Vector2(867, 300));
         collectibles.Add(new Vector2(780, 100));
         collectibles.Add(new Vector2(423, 403));
-        collectibles.Add(new Vector2(140, 310));
+        collectibles.Add(new Vector2(1140, 310));
         collectibles.Add(new Vector2(707, 840));
-        collectibles.Add(new Vector2(110, 800));
+        collectibles.Add(new Vector2(1110, 870));
         collectibles.Add(new Vector2(400, 700));
+        collectibles.Add(new Vector2(1000, 900));
     }
 
     static void Update()
