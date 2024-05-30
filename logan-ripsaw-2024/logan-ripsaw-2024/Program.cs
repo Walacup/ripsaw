@@ -65,7 +65,7 @@ public class Program
     static bool playerHurt = false;
     static bool gameOver = false;
     static bool gameWon = false;
-
+    static int currentLevel = 1;
 
     static void Main()
     {
@@ -74,7 +74,7 @@ public class Program
         // Set the target frames-per-second (FPS)
         Raylib.SetTargetFPS(targetFps);
         // Setup your game. This is a function YOU define.
-        Setup();
+        SetupLevel(currentLevel);
         // Loop so long as window should not close
         while (!Raylib.WindowShouldClose())
         {
@@ -104,31 +104,56 @@ public class Program
         Raylib.CloseWindow();
     }
 
-    static void Setup()
+    static void SetupLevel(int level)
     {
         // Your one-time setup code here
+        if (level == 1)
+        {
+            // Initialize saw positions
+            saws.Add(new Saw(new Vector2(315, 340), new Vector2(20, 60), 700f));
+            saws.Add(new Saw(new Vector2(760, 175), new Vector2(20, 60), 700f));
+            saws.Add(new Saw(new Vector2(512, 650), new Vector2(20, 60), 700f));
+            saws.Add(new Saw(new Vector2(1223, 209), new Vector2(20, 60), 700f));
+            saws.Add(new Saw(new Vector2(800, 850), new Vector2(20, 60), 700f));
+            saws.Add(new Saw(new Vector2(200, 550), new Vector2(20, 60), 700f));
+            saws.Add(new Saw(new Vector2(800, 500), new Vector2(20, 60), 700f));
+            saws.Add(new Saw(new Vector2(1100, 800), new Vector2(20, 60), 700f));
 
-        // Initialize saw positions
-        saws.Add(new Saw(new Vector2(315, 340), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(760, 175), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(512, 650), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(1223, 209), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(800, 850), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(200, 550), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(800, 500), new Vector2(20, 60), 700f));
-        saws.Add(new Saw(new Vector2(1100, 800), new Vector2(20, 60), 700f));
+            // Initialize collectible positions
+            collectibles.Add(new Vector2(290, 200));
+            collectibles.Add(new Vector2(570, 580));
+            collectibles.Add(new Vector2(867, 300));
+            collectibles.Add(new Vector2(780, 100));
+            collectibles.Add(new Vector2(423, 403));
+            collectibles.Add(new Vector2(1140, 310));
+            collectibles.Add(new Vector2(707, 840));
+            collectibles.Add(new Vector2(1110, 870));
+            collectibles.Add(new Vector2(400, 700));
+            collectibles.Add(new Vector2(1000, 900));
+        }
 
-        // Initialize collectible positions
-        collectibles.Add(new Vector2(290, 200));
-        collectibles.Add(new Vector2(570, 580));
-        collectibles.Add(new Vector2(867, 300));
-        collectibles.Add(new Vector2(780, 100));
-        collectibles.Add(new Vector2(423, 403));
-        collectibles.Add(new Vector2(1140, 310));
-        collectibles.Add(new Vector2(707, 840));
-        collectibles.Add(new Vector2(1110, 870));
-        collectibles.Add(new Vector2(400, 700));
-        collectibles.Add(new Vector2(1000, 900));
+        else if (level == 2)
+        {
+            // Initialize saw positions for level 2
+            saws.Add(new Saw(new Vector2(315, 340), new Vector2(30, 80), 800f));
+            saws.Add(new Saw(new Vector2(760, 175), new Vector2(30, 80), 800f));
+            saws.Add(new Saw(new Vector2(512, 650), new Vector2(30, 80), 800f));
+            saws.Add(new Saw(new Vector2(1223, 209), new Vector2(30, 80), 800f));
+            saws.Add(new Saw(new Vector2(800, 850), new Vector2(30, 80), 800f));
+            saws.Add(new Saw(new Vector2(200, 550), new Vector2(30, 80), 800f));
+            saws.Add(new Saw(new Vector2(800, 500), new Vector2(30, 80), 800f));
+            saws.Add(new Saw(new Vector2(1100, 800), new Vector2(30, 80), 800f));
+
+            // Initialize collectible positions for level 2
+            collectibles.Add(new Vector2(150, 150));
+            collectibles.Add(new Vector2(300, 300));
+            collectibles.Add(new Vector2(450, 450));
+            collectibles.Add(new Vector2(600, 600));
+            collectibles.Add(new Vector2(750, 750));
+            collectibles.Add(new Vector2(900, 900));
+            collectibles.Add(new Vector2(1050, 1050));
+            collectibles.Add(new Vector2(1200, 1200));
+        }
     }
 
     static void Update()
