@@ -23,10 +23,23 @@ public class Program
     static float speed = 600f;
 
     // Saw properties
-    static Vector2 sawPosition = new Vector2(400, 300);
-    static Vector2 sawSize = new Vector2(20, 60);
-    static float sawRotation = 0f; // Saw rotation angle
-    static float sawRotationSpeed = 160f; // Degrees per second
+    class Saw
+    {
+        public Vector2 Position;
+        public Vector2 Size;
+        public float Rotation;
+        public float RotationSpeed;
+
+        public Saw(Vector2 position, Vector2 size, float rotationSpeed)
+        {
+            Position = position;
+            Size = size;
+            Rotation = 0f;
+            RotationSpeed = rotationSpeed;
+        }
+    }
+
+    static List<Saw> saws = new List<Saw>();
 
     // Collectible properties
     static List<Vector2> collectibles = new List<Vector2>();
@@ -63,10 +76,18 @@ public class Program
     static void Setup()
     {
         // Your one-time setup code here
+
+        // Initialize saw positions
+        saws.Add(new Saw(new Vector2(200, 300), new Vector2(20, 60), 160f));
+        saws.Add(new Saw(new Vector2(700, 175), new Vector2(20, 60), 120f));
+        saws.Add(new Saw(new Vector2(500, 600), new Vector2(20, 60), 180f));
+
         // Initialize collectible positions
         collectibles.Add(new Vector2(200, 200));
-        collectibles.Add(new Vector2(600, 500));
+        collectibles.Add(new Vector2(500, 500));
         collectibles.Add(new Vector2(800, 300));
+        collectibles.Add(new Vector2(700, 100));
+        collectibles.Add(new Vector2(400, 400));
     }
 
     static void Update()
@@ -111,21 +132,20 @@ public class Program
             PlayerPosition.Y = screenHeight - PlayerRadius;
         }
 
-        // Saw rotation
-        sawRotation += sawRotationSpeed * deltaTime;
-        if (sawRotation > 360f)
+        // Saw rotation and collision
+        playerHurt = false;
+        foreach (var saw in saws)
         {
-            sawRotation -= 360f;
-        }
+            saw.Rotation += saw.RotationSpeed * deltaTime;
+            if (saw.Rotation > 360f)
+            {
+                saw.Rotation -= 360f;
+            }
 
-        // Check for collision with the saw
-        if (Raylib.CheckCollisionCircleRec(PlayerPosition, PlayerRadius, new Rectangle(sawPosition.X - sawSize.X / 2, sawPosition.Y - sawSize.Y / 2, sawSize.X, sawSize.Y)))
-        {
-            playerHurt = true;
-        }
-        else
-        {
-            playerHurt = false;
+            if (Raylib.CheckCollisionCircleRec(PlayerPosition, PlayerRadius, new Rectangle(saw.Position.X - saw.Size.X / 2, saw.Position.Y - saw.Size.Y / 2, saw.Size.X, saw.Size.Y)))
+            {
+                playerHurt = true;
+            }
         }
 
         // Check for collision with collectibles
@@ -138,12 +158,16 @@ public class Program
         }
 
         // Draw Saws
-        Raylib.DrawRectanglePro(
-           new Rectangle(sawPosition.X, sawPosition.Y, sawSize.X, sawSize.Y),
-           new Vector2(sawSize.X / 2, sawSize.Y / 2),
-           sawRotation,
-           Color.LightGray
-       );
+        // Draw saws
+        foreach (var saw in saws)
+        {
+            Raylib.DrawRectanglePro(
+               new Rectangle(saw.Position.X, saw.Position.Y, saw.Size.X, saw.Size.Y),
+               new Vector2(saw.Size.X / 2, saw.Size.Y / 2),
+               saw.Rotation,
+               Color.LightGray
+           );
+        }
 
         // Draw player
         DrawPlayer(PlayerPosition, playerHurt ? Color.Red : Color.RayWhite);
