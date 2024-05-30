@@ -79,9 +79,11 @@ public class Program
         // Your one-time setup code here
 
         // Initialize saw positions
-        saws.Add(new Saw(new Vector2(200, 300), new Vector2(20, 60), 160f));
-        saws.Add(new Saw(new Vector2(700, 175), new Vector2(20, 60), 120f));
-        saws.Add(new Saw(new Vector2(500, 600), new Vector2(20, 60), 180f));
+        saws.Add(new Saw(new Vector2(200, 300), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(700, 175), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(500, 600), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(800, 800), new Vector2(20, 60), 700f));
+        saws.Add(new Saw(new Vector2(600, 900), new Vector2(20, 60), 700f));
 
         // Initialize collectible positions
         collectibles.Add(new Vector2(200, 200));
@@ -89,6 +91,8 @@ public class Program
         collectibles.Add(new Vector2(800, 300));
         collectibles.Add(new Vector2(700, 100));
         collectibles.Add(new Vector2(400, 400));
+        collectibles.Add(new Vector2(340, 310));
+        collectibles.Add(new Vector2(700, 800));
     }
 
     static void Update()
