@@ -190,7 +190,7 @@ public class Program
 
     static void DrawScore()
     {
-        Raylib.DrawText($"Score: {score}", 10, 10, 40, Color.White);
+        Raylib.DrawText($"Score: {score}", 10, 10, 80, Color.White);
     }
 
 }
