@@ -58,6 +58,7 @@ public class Program
 
     static bool playerHurt = false;
     static bool gameOver = false;
+    static bool gameWon = false;
 
 
     static void Main()
@@ -77,14 +78,19 @@ public class Program
             Raylib.ClearBackground(Color.Black);
             // Your game code here. This is a function YOU define.
 
-            if (!gameOver)
+            if (!gameOver && !gameWon)
             {
                 Update();
             }
-            else
+            else if (gameOver)
             {
                 DrawGameOver();
             }
+            else if (gameWon)
+            {
+                DrawGameWon();
+            }
+
             // Stop drawing to the canvas, begin displaying the frame
             Raylib.EndDrawing();
         }
@@ -186,7 +192,14 @@ public class Program
             {
                 collectibles.RemoveAt(i); // Remove collectible if collected
                 score++; // Increment score
+
+                // Check if all collectibles are collected
+                if (collectibles.Count == 0)
+                {
+                    gameWon = true;
+                }
             }
+        
         }
 
         // Draw Saws
@@ -245,6 +258,12 @@ public class Program
     static void DrawGameOver()
     {
         Raylib.DrawText("Game Over", screenWidth / 2 - 100, screenHeight / 2 - 20, 40, Color.Red);
+        Raylib.DrawText($"Final Score: {score}", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, Color.White);
+    }
+
+    static void DrawGameWon()
+    {
+        Raylib.DrawText("You Win!", screenWidth / 2 - 100, screenHeight / 2 - 20, 40, Color.Green);
         Raylib.DrawText($"Final Score: {score}", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, Color.White);
     }
 
