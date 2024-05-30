@@ -19,16 +19,17 @@ public class Program
 
     // Player properties
     static Vector2 PlayerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
-    static Vector2 PlayerSize = new Vector2(50, 50);
+    static float PlayerRadius = 25f;
     static float speed = 600f;
 
     // Saw properties
     static Vector2 sawPosition = new Vector2(400, 300);
-    static Vector2 sawSize = new Vector2(20, 200);
+    static Vector2 sawSize = new Vector2(20, 60);
     static float sawRotation = 0f; // Saw rotation angle
     static float sawRotationSpeed = 160f; // Degrees per second
 
     static bool playerHurt = false;
+
 
     static void Main()
     {
@@ -85,22 +86,21 @@ public class Program
         }
 
         // Boundary checks
-        if (PlayerPosition.X < 0)
+        if (PlayerPosition.X - PlayerRadius < 0)
         {
-            PlayerPosition.X = 0;
+            PlayerPosition.X = PlayerRadius;
         }
-        if (PlayerPosition.Y < 0)
+        if (PlayerPosition.Y - PlayerRadius < 0)
         {
-            PlayerPosition.Y = 0;
+            PlayerPosition.Y = PlayerRadius;
         }
-        if (PlayerPosition.X + PlayerSize.X > screenWidth)
+        if (PlayerPosition.X + PlayerRadius > screenWidth)
         {
-            PlayerPosition.X = screenWidth - PlayerSize.X;
+            PlayerPosition.X = screenWidth - PlayerRadius;
         }
-        if (PlayerPosition.Y + PlayerSize.Y > screenHeight)
+        if (PlayerPosition.Y + PlayerRadius > screenHeight)
         {
-            PlayerPosition.Y = screenHeight - PlayerSize.Y;
-
+            PlayerPosition.Y = screenHeight - PlayerRadius;
         }
 
         // Saw rotation
@@ -111,9 +111,7 @@ public class Program
         }
 
         // Check for collision with the saw
-        if (Raylib.CheckCollisionRecs(
-           new Rectangle(PlayerPosition.X, PlayerPosition.Y, PlayerSize.X, PlayerSize.Y),
-           new Rectangle(sawPosition.X, sawPosition.Y, sawSize.X, sawSize.Y)))
+        if (Raylib.CheckCollisionCircleRec(PlayerPosition, PlayerRadius, new Rectangle(sawPosition.X - sawSize.X / 2, sawPosition.Y - sawSize.Y / 2, sawSize.X, sawSize.Y)))
         {
             playerHurt = true;
         }
@@ -127,11 +125,17 @@ public class Program
            new Rectangle(sawPosition.X, sawPosition.Y, sawSize.X, sawSize.Y),
            new Vector2(sawSize.X / 2, sawSize.Y / 2),
            sawRotation,
-           CustomColors.CustomLightGreenColor
+           Color.LightGray
        );
 
         // Draw player
-        Raylib.DrawRectangleV(PlayerPosition, PlayerSize, playerHurt ? Color.Red : Color.RayWhite);
+        // Draw player (bunny shape)
+        DrawPlayer(PlayerPosition, playerHurt ? Color.Red : Color.RayWhite);
+    }
 
+    static void DrawPlayer(Vector2 position, Color color)
+    {
+       
+        Raylib.DrawCircleV(position, PlayerRadius, color);
     }
 }
