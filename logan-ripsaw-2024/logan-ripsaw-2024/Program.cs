@@ -50,10 +50,10 @@ public class Program
     static List<Color> collectibleColors = new List<Color>
     {
         Color.Gold,
-        Color.White
+        Color.Black
     };
 
-    static float colorChangeSpeed = 20.0f; // Speed at which colors change
+    static float colorChangeSpeed = 4.0f; // Speed at which colors change
 
     static bool playerHurt = false;
 
