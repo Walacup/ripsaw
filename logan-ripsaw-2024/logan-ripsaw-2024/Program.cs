@@ -46,6 +46,15 @@ public class Program
     static float collectibleRadius = 15f;
     static int score = 0; // Player score
 
+    // Color cycle for collectibles
+    static List<Color> collectibleColors = new List<Color>
+    {
+        Color.Gold,
+        Color.White
+    };
+
+    static float colorChangeSpeed = 20.0f; // Speed at which colors change
+
     static bool playerHurt = false;
 
 
@@ -63,7 +72,7 @@ public class Program
             // Enable drawing to the canvas (window)
             Raylib.BeginDrawing();
             // Clear the canvas with one color
-            Raylib.ClearBackground(CustomColors.CustomDarkPurpleColor);
+            Raylib.ClearBackground(Color.Black);
             // Your game code here. This is a function YOU define.
 
             Update();
@@ -178,9 +187,12 @@ public class Program
         DrawPlayer(PlayerPosition, playerHurt ? Color.Red : Color.RayWhite);
 
         // Draw collectibles
+        float elapsedTime = (float)Raylib.GetTime();
+        int colorIndex = (int)(elapsedTime * colorChangeSpeed) % collectibleColors.Count;
+        Color currentColor = collectibleColors[colorIndex];
         foreach (var collectible in collectibles)
         {
-            Raylib.DrawCircleV(collectible, collectibleRadius, Color.Gold);
+            Raylib.DrawCircleV(collectible, collectibleRadius, currentColor);
         }
 
         DrawScore();
