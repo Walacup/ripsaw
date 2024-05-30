@@ -52,7 +52,8 @@ public class Program
     static void Update()
     {
         // Your game code run each frame here
-        // Handle rectangle movement with WASD keys
+
+        // Player movement
         float deltaTime = Raylib.GetFrameTime();
 
         if (Raylib.IsKeyDown(KeyboardKey.W))
@@ -72,6 +73,26 @@ public class Program
             PlayerPosition.X += speed * deltaTime;
         }
 
-        Raylib.DrawRectangleV(PlayerPosition, PlayerSize, Color.RayWhite);
+        // Boundary checks
+        if (PlayerPosition.X < 0)
+        {
+            PlayerPosition.X = 0;
+        }
+        if (PlayerPosition.Y < 0)
+        {
+            PlayerPosition.Y = 0;
+        }
+        if (PlayerPosition.X + PlayerSize.X > screenWidth)
+        {
+            PlayerPosition.X = screenWidth - PlayerSize.X;
+        }
+        if (PlayerPosition.Y + PlayerSize.Y > screenHeight)
+        {
+            PlayerPosition.Y = screenHeight - PlayerSize.Y;
+
+        }
+
+            Raylib.DrawRectangleV(PlayerPosition, PlayerSize, Color.RayWhite);
+        
     }
 }
