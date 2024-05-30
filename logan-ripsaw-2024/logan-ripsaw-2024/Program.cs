@@ -57,6 +57,7 @@ public class Program
     static float colorChangeSpeed = 1.4f; // Speed at which colors change
 
     static bool playerHurt = false;
+    static bool gameOver = false;
 
 
     static void Main()
@@ -76,7 +77,14 @@ public class Program
             Raylib.ClearBackground(Color.Black);
             // Your game code here. This is a function YOU define.
 
-            Update();
+            if (!gameOver)
+            {
+                Update();
+            }
+            else
+            {
+                DrawGameOver();
+            }
             // Stop drawing to the canvas, begin displaying the frame
             Raylib.EndDrawing();
         }
@@ -163,8 +171,13 @@ public class Program
             {
                 playerHurt = true;
                 playerHealth -= 1; // Decrease health when colliding with a saw
+                if (playerHealth <= 0)
+                {
+                    gameOver = true;
+                }
             }
         }
+        
 
         // Check for collision with collectibles
         for (int i = collectibles.Count - 1; i >= 0; i--)
@@ -227,6 +240,12 @@ public class Program
         // Draw health
         int healthWidth = (int)((playerHealth / 100.0f) * barWidth);
         Raylib.DrawRectangle(barX, barY, healthWidth, barHeight, Color.Red);
+    }
+
+    static void DrawGameOver()
+    {
+        Raylib.DrawText("Game Over", screenWidth / 2 - 100, screenHeight / 2 - 20, 40, Color.Red);
+        Raylib.DrawText($"Final Score: {score}", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, Color.White);
     }
 
 }
