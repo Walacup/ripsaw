@@ -3,12 +3,7 @@ using System.Numerics;
 
 
 public static class CustomColors
-{
-    public static Color LightPurple = new Color(191, 144, 245, 255);
-    public static Color DarkOrange = new Color(255, 140, 0, 255);
-    public static Color SkyBlue = new Color(135, 206, 235, 255);
-    public static Color ForestGreen = new Color(34, 139, 34, 255);
-    public static Color MidnightBlue = new Color(25, 25, 112, 255);
+{ 
     public static Color GameBackgroundColor = new Color(0, 10, 11, 255);
 }
 public class Program
@@ -18,6 +13,11 @@ public class Program
     static int screenWidth = 1300; // Screen width
     static int screenHeight = 1000; // Screen height
     static int targetFps = 60; // Target frames-per-second
+
+    // Define the rectangle's properties
+    static Vector2 PlayerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
+    static Vector2 PlayerSize = new Vector2(50, 50);
+    static float speed = 600f;
 
     static void Main()
     {
@@ -52,5 +52,26 @@ public class Program
     static void Update()
     {
         // Your game code run each frame here
+        // Handle rectangle movement with WASD keys
+        float deltaTime = Raylib.GetFrameTime();
+
+        if (Raylib.IsKeyDown(KeyboardKey.W))
+        {
+            PlayerPosition.Y -= speed * deltaTime;
+        }
+        if (Raylib.IsKeyDown(KeyboardKey.S))
+        {
+            PlayerPosition.Y += speed * deltaTime;
+        }
+        if (Raylib.IsKeyDown(KeyboardKey.A))
+        {
+            PlayerPosition.X -= speed * deltaTime;
+        }
+        if (Raylib.IsKeyDown(KeyboardKey.D))
+        {
+            PlayerPosition.X += speed * deltaTime;
+        }
+
+        Raylib.DrawRectangleV(PlayerPosition, PlayerSize, Color.RayWhite);
     }
 }
