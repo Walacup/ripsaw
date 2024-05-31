@@ -35,13 +35,15 @@ public class Program
         public Vector2 Size;
         public float Rotation;
         public float RotationSpeed;
+        public Vector2 Velocity;
 
-        public Saw(Vector2 position, Vector2 size, float rotationSpeed)
+        public Saw(Vector2 position, Vector2 size, float rotationSpeed, Vector2 velocity)
         {
             Position = position;
             Size = size;
             Rotation = 0f;
             RotationSpeed = rotationSpeed;
+            Velocity = velocity;
         }
     }
 
@@ -106,57 +108,58 @@ public class Program
 
     static void SetupLevel(int level)
     {
-        // Your one-time setup code here
-        if (level == 1)
         {
-            // Initialize saw positions
-            saws.Add(new Saw(new Vector2(315, 340), new Vector2(20, 60), 700f));
-            saws.Add(new Saw(new Vector2(760, 175), new Vector2(20, 60), 700f));
-            saws.Add(new Saw(new Vector2(512, 650), new Vector2(20, 60), 700f));
-            saws.Add(new Saw(new Vector2(1223, 209), new Vector2(20, 60), 700f));
-            saws.Add(new Saw(new Vector2(800, 850), new Vector2(20, 60), 700f));
-            saws.Add(new Saw(new Vector2(200, 550), new Vector2(20, 60), 700f));
-            saws.Add(new Saw(new Vector2(800, 500), new Vector2(20, 60), 700f));
-            saws.Add(new Saw(new Vector2(1100, 800), new Vector2(20, 60), 700f));
+            // Your one-time setup code here
+            if (level == 1)
+            {
+                // Initialize saw positions and velocities
+                saws.Add(new Saw(new Vector2(315, 340), new Vector2(20, 60), 700f, new Vector2(200, 150)));
+                saws.Add(new Saw(new Vector2(760, 175), new Vector2(20, 60), 700f, new Vector2(150, -200)));
+                saws.Add(new Saw(new Vector2(512, 650), new Vector2(20, 60), 700f, new Vector2(-100, 100)));
+                saws.Add(new Saw(new Vector2(1223, 209), new Vector2(20, 60), 700f, new Vector2(-200, 150)));
+                saws.Add(new Saw(new Vector2(800, 850), new Vector2(20, 60), 700f, new Vector2(250, -100)));
+                saws.Add(new Saw(new Vector2(200, 550), new Vector2(20, 60), 700f, new Vector2(100, 200)));
+                saws.Add(new Saw(new Vector2(800, 500), new Vector2(20, 60), 700f, new Vector2(-150, -150)));
+                saws.Add(new Saw(new Vector2(1100, 800), new Vector2(20, 60), 700f, new Vector2(200, -200)));
 
-            // Initialize collectible positions
-            collectibles.Add(new Vector2(290, 200));
-            collectibles.Add(new Vector2(570, 580));
-            collectibles.Add(new Vector2(867, 300));
-            collectibles.Add(new Vector2(780, 100));
-            collectibles.Add(new Vector2(423, 403));
-            collectibles.Add(new Vector2(1140, 310));
-            collectibles.Add(new Vector2(707, 840));
-            collectibles.Add(new Vector2(1110, 870));
-            collectibles.Add(new Vector2(400, 700));
-            collectibles.Add(new Vector2(1000, 900));
-        }
+                // Initialize collectible positions
+                collectibles.Add(new Vector2(290, 200));
+                collectibles.Add(new Vector2(570, 580));
+                collectibles.Add(new Vector2(867, 300));
+                collectibles.Add(new Vector2(780, 100));
+                collectibles.Add(new Vector2(423, 403));
+                collectibles.Add(new Vector2(1140, 310));
+                collectibles.Add(new Vector2(707, 840));
+                collectibles.Add(new Vector2(1110, 870));
+                collectibles.Add(new Vector2(400, 700));
+                collectibles.Add(new Vector2(1000, 900));
+            }
+            else if (level == 2)
+            {
+                // Initialize saw positions and velocities for level 2
+                saws.Add(new Saw(new Vector2(315, 340), new Vector2(30, 80), 800f, new Vector2(200, 150)));
+                saws.Add(new Saw(new Vector2(760, 175), new Vector2(30, 80), 800f, new Vector2(150, -200)));
+                saws.Add(new Saw(new Vector2(512, 650), new Vector2(30, 80), 800f, new Vector2(-100, 100)));
+                saws.Add(new Saw(new Vector2(1223, 209), new Vector2(30, 80), 800f, new Vector2(-200, 150)));
+                saws.Add(new Saw(new Vector2(800, 850), new Vector2(30, 80), 800f, new Vector2(250, -100)));
+                saws.Add(new Saw(new Vector2(200, 550), new Vector2(30, 80), 800f, new Vector2(100, 200)));
+                saws.Add(new Saw(new Vector2(800, 500), new Vector2(30, 80), 800f, new Vector2(-150, -150)));
+                saws.Add(new Saw(new Vector2(1100, 800), new Vector2(30, 80), 800f, new Vector2(200, -200)));
 
-        else if (level == 2)
-        {
-            // Initialize saw positions for level 2
-            saws.Add(new Saw(new Vector2(315, 340), new Vector2(30, 80), 800f));
-            saws.Add(new Saw(new Vector2(760, 175), new Vector2(30, 80), 800f));
-            saws.Add(new Saw(new Vector2(512, 650), new Vector2(30, 80), 800f));
-            saws.Add(new Saw(new Vector2(1223, 209), new Vector2(30, 80), 800f));
-            saws.Add(new Saw(new Vector2(800, 850), new Vector2(30, 80), 800f));
-            saws.Add(new Saw(new Vector2(200, 550), new Vector2(30, 80), 800f));
-            saws.Add(new Saw(new Vector2(800, 500), new Vector2(30, 80), 800f));
-            saws.Add(new Saw(new Vector2(1100, 800), new Vector2(30, 80), 800f));
-
-            // Initialize collectible positions for level 2
-            collectibles.Add(new Vector2(150, 150));
-            collectibles.Add(new Vector2(300, 300));
-            collectibles.Add(new Vector2(450, 450));
-            collectibles.Add(new Vector2(600, 600));
-            collectibles.Add(new Vector2(750, 750));
-            collectibles.Add(new Vector2(900, 900));
-            collectibles.Add(new Vector2(1050, 1050));
-            collectibles.Add(new Vector2(1200, 1200));
+                // Initialize collectible positions for level 2
+                collectibles.Add(new Vector2(150, 150));
+                collectibles.Add(new Vector2(300, 300));
+                collectibles.Add(new Vector2(450, 450));
+                collectibles.Add(new Vector2(600, 600));
+                collectibles.Add(new Vector2(750, 750));
+                collectibles.Add(new Vector2(900, 900));
+                collectibles.Add(new Vector2(1050, 1050));
+                collectibles.Add(new Vector2(1200, 1200));
+            }
         }
     }
 
-    static void Update()
+        static void Update()
     {
         // Your game code run each frame here
 
@@ -202,12 +205,27 @@ public class Program
         playerHurt = false;
         foreach (var saw in saws)
         {
+            // Rotate the saw
             saw.Rotation += saw.RotationSpeed * deltaTime;
             if (saw.Rotation > 360f)
             {
                 saw.Rotation -= 360f;
             }
 
+            // Move the saw
+            saw.Position += saw.Velocity * deltaTime;
+
+            // Bounce the saw off the screen edges
+            if (saw.Position.X - saw.Size.X / 2 < 0 || saw.Position.X + saw.Size.X / 2 > screenWidth)
+            {
+                saw.Velocity.X = -saw.Velocity.X;
+            }
+            if (saw.Position.Y - saw.Size.Y / 2 < 0 || saw.Position.Y + saw.Size.Y / 2 > screenHeight)
+            {
+                saw.Velocity.Y = -saw.Velocity.Y;
+            }
+
+            // Check collision with player
             if (Raylib.CheckCollisionCircleRec(PlayerPosition, PlayerRadius, new Rectangle(saw.Position.X - saw.Size.X / 2, saw.Position.Y - saw.Size.Y / 2, saw.Size.X, saw.Size.Y)))
             {
                 playerHurt = true;
@@ -218,7 +236,7 @@ public class Program
                 }
             }
         }
-        
+
 
         // Check for collision with collectibles
         for (int i = collectibles.Count - 1; i >= 0; i--)
@@ -267,21 +285,25 @@ public class Program
     static void DrawPlayer(Vector2 position, Color color)
     {
 
-        // Draw the main body of the UFO (ellipse)
+        // grey colors
+        Color darkGrey = new Color(105, 105, 105, 255); // Dark grey for the body
+        Color lightGrey = new Color(169, 169, 169, 255); // Light grey for the dome
+
+        // main body(ellipse)
         float ufoWidth = PlayerRadius * 2.5f;
         float ufoHeight = PlayerRadius * 1.2f;
-        Raylib.DrawEllipse((int)position.X, (int)position.Y, (int)ufoWidth, (int)ufoHeight, color);
+        Raylib.DrawEllipse((int)position.X, (int)position.Y, (int)ufoWidth, (int)ufoHeight, darkGrey);
 
-        // Draw the dome of the UFO (ellipse)
+        // (ellipse)
         float domeWidth = PlayerRadius * 1.5f;
         float domeHeight = PlayerRadius * 0.8f;
         Vector2 domePosition = new Vector2(position.X, position.Y - PlayerRadius * 0.5f);
-        Raylib.DrawEllipse((int)domePosition.X, (int)domePosition.Y, (int)domeWidth, (int)domeHeight, Color.LightGray);
+        Raylib.DrawEllipse((int)domePosition.X, (int)domePosition.Y, (int)domeWidth, (int)domeHeight, lightGrey);
 
-        // Draw the base of the dome (line)
+        // (line)
         Vector2 domeBaseLeft = new Vector2(domePosition.X - domeWidth / 2, domePosition.Y);
         Vector2 domeBaseRight = new Vector2(domePosition.X + domeWidth / 2, domePosition.Y);
-        Raylib.DrawLineEx(domeBaseLeft, domeBaseRight, 2, Color.LightGray);
+        Raylib.DrawLineEx(domeBaseLeft, domeBaseRight, 2, lightGrey);
     }
 
     static void DrawScore()
