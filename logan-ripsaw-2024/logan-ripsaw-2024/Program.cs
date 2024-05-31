@@ -19,7 +19,7 @@ public class Program
     static string title = "Stupid Game"; // Window title
     static int screenWidth = 1300; // Screen width
     static int screenHeight = 1000; // Screen height
-    static int targetFps = 60; // Target frames-per-second
+    static int targetFps = 120; // Target frames-per-second
 
     // Player properties
     static Vector2 PlayerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
