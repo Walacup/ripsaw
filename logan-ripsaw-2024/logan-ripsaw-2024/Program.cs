@@ -27,6 +27,7 @@ public class Program
     static float speed = 600f;
     static int playerHealth = 100;
 
+
     // Saw properties
     class Saw
     {
@@ -55,12 +56,10 @@ public class Program
     static List<Color> collectibleColors = new List<Color>
     {
         Color.Gold,
-        Color.Red,
-        Color.Green,
-        Color.Blue
+        Color.Black
     };
 
-    static float colorChangeSpeed = 5.0f; // Speed at which colors change
+    static float colorChangeSpeed = 1.0f; // Speed at which colors change
 
     static bool playerHurt = false;
     static bool gameOver = false;
@@ -74,6 +73,7 @@ public class Program
         // Set the target frames-per-second (FPS)
         Raylib.SetTargetFPS(targetFps);
         // Setup your game. This is a function YOU define.
+      
         SetupLevel(currentLevel);
         // Loop so long as window should not close
         while (!Raylib.WindowShouldClose())
@@ -267,7 +267,21 @@ public class Program
     static void DrawPlayer(Vector2 position, Color color)
     {
 
-        Raylib.DrawCircleV(position, PlayerRadius, color);
+        // Draw the main body of the UFO (ellipse)
+        float ufoWidth = PlayerRadius * 2.5f;
+        float ufoHeight = PlayerRadius * 1.2f;
+        Raylib.DrawEllipse((int)position.X, (int)position.Y, (int)ufoWidth, (int)ufoHeight, color);
+
+        // Draw the dome of the UFO (ellipse)
+        float domeWidth = PlayerRadius * 1.5f;
+        float domeHeight = PlayerRadius * 0.8f;
+        Vector2 domePosition = new Vector2(position.X, position.Y - PlayerRadius * 0.5f);
+        Raylib.DrawEllipse((int)domePosition.X, (int)domePosition.Y, (int)domeWidth, (int)domeHeight, Color.LightGray);
+
+        // Draw the base of the dome (line)
+        Vector2 domeBaseLeft = new Vector2(domePosition.X - domeWidth / 2, domePosition.Y);
+        Vector2 domeBaseRight = new Vector2(domePosition.X + domeWidth / 2, domePosition.Y);
+        Raylib.DrawLineEx(domeBaseLeft, domeBaseRight, 2, Color.LightGray);
     }
 
     static void DrawScore()
