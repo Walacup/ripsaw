@@ -260,6 +260,46 @@ public class Program
             }
         }
 
+        // Enemy movement
+        enemy.Position += enemy.Velocity * deltaTime;
+
+        // Bounce the enemy off the screen edges
+        if (enemy.Position.X - enemy.Radius < 0 || enemy.Position.X + enemy.Radius > screenWidth)
+        {
+            enemy.Velocity.X = -enemy.Velocity.X;
+        }
+        if (enemy.Position.Y - enemy.Radius < 0 || enemy.Position.Y + enemy.Radius > screenHeight)
+        {
+            enemy.Velocity.Y = -enemy.Velocity.Y;
+        }
+
+        // Enemy shooting
+        timeSinceLastShot += deltaTime;
+        if (timeSinceLastShot >= shootInterval)
+        {
+            ShootAtPlayer();
+            timeSinceLastShot = 0f;
+        }
+
+        // Update enemy projectiles
+        for (int i = enemyProjectiles.Count - 1; i >= 0; i--)
+        {
+            enemyProjectiles[i] += Vector2.Normalize(PlayerPosition - enemyProjectiles[i]) * projectileSpeed * deltaTime;
+            if (Raylib.CheckCollisionCircles(PlayerPosition, PlayerRadius, enemyProjectiles[i], 5f))
+            {
+                playerHealth -= 10; // Decrease health when hit by projectile
+                enemyProjectiles.RemoveAt(i);
+                if (playerHealth <= 0)
+                {
+                    gameOver = true;
+                }
+            }
+            else if (enemyProjectiles[i].X < 0 || enemyProjectiles[i].X > screenWidth || enemyProjectiles[i].Y < 0 || enemyProjectiles[i].Y > screenHeight)
+            {
+                enemyProjectiles.RemoveAt(i); // Remove projectiles that go off-screen
+            }
+        }
+
 
         // Check for collision with collectibles
         for (int i = collectibles.Count - 1; i >= 0; i--)
@@ -292,6 +332,15 @@ public class Program
         // Draw player
         DrawPlayer(PlayerPosition, playerHurt ? Color.Red : Color.RayWhite);
 
+        // Draw enemy
+        DrawPlayer(enemy.Position, Color.Blue);
+
+        // Draw enemy projectiles
+        foreach (var projectile in enemyProjectiles)
+        {
+            Raylib.DrawCircleV(projectile, 10f, Color.Red);
+        }
+
         // Draw collectibles
         float elapsedTime = (float)Raylib.GetTime();
         int colorIndex = (int)(elapsedTime * colorChangeSpeed) % collectibleColors.Count;
@@ -303,6 +352,11 @@ public class Program
 
         DrawScore();
         DrawHealthBar();
+    }
+
+    static void ShootAtPlayer()
+    {
+        enemyProjectiles.Add(enemy.Position);
     }
 
     static void DrawPlayer(Vector2 position, Color color)
