@@ -27,15 +27,6 @@ public class Program
     static float speed = 600f;
     static int playerHealth = 100;
 
-    // Enemy properties
-    static Vector2 EnemyPosition = new Vector2(screenWidth / 4, screenHeight / 4);
-    static float EnemyRadius = 25f;
-    static float enemySpeed = 200f;
-    static List<Vector2> enemyBullets = new List<Vector2>();
-    static float bulletSpeed = 300f;
-    static float shootCooldown = 1.0f;
-    static float timeSinceLastShot = 0f;
-
 
     // Saw properties
     class Saw
@@ -76,6 +67,29 @@ public class Program
     static bool gameOver = false;
     static bool gameWon = false;
     static int currentLevel = 1;
+
+    // Enemy properties
+    class Enemy
+    {
+        public Vector2 Position;
+        public float Radius;
+        public Vector2 Velocity;
+        public float Speed;
+
+        public Enemy(Vector2 position, float radius, float speed)
+        {
+            Position = position;
+            Radius = radius;
+            Speed = speed;
+            Velocity = new Vector2(speed, speed);
+        }
+    }
+
+    static Enemy enemy = new Enemy(new Vector2(100, 100), 25f, 300f);
+    static List<Vector2> enemyProjectiles = new List<Vector2>();
+    static float projectileSpeed = 400f;
+    static float shootInterval = 2f;
+    static float timeSinceLastShot = 0f;
 
     static void Main()
     {
