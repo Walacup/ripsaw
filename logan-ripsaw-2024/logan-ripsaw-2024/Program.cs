@@ -27,6 +27,15 @@ public class Program
     static float speed = 600f;
     static int playerHealth = 100;
 
+    // Enemy properties
+    static Vector2 EnemyPosition = new Vector2(screenWidth / 4, screenHeight / 4);
+    static float EnemyRadius = 25f;
+    static float enemySpeed = 200f;
+    static List<Vector2> enemyBullets = new List<Vector2>();
+    static float bulletSpeed = 300f;
+    static float shootCooldown = 1.0f;
+    static float timeSinceLastShot = 0f;
+
 
     // Saw properties
     class Saw
