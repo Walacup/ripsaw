@@ -1,9 +1,9 @@
 ﻿using Raylib_cs;
 using System.Numerics;
-
+using System.Collections.Generic;
 
 public static class CustomColors
-{ 
+{
     public static Color GameBackgroundColor = new Color(0, 10, 11, 255);
     public static Color CustomGreenColor = new Color(78, 133, 110, 255); // Color #4e856e
     public static Color CustomDarkPurpleColor = new Color(38, 11, 38, 255); // Color #260B26
@@ -13,6 +13,15 @@ public static class CustomColors
     public static Color CustomYellowColor = new Color(251, 255, 0, 255); // Color #fbff00
     public static Color CustomOrangeColor = new Color(219, 119, 4, 255); // Color #db7704
 }
+
+public enum GameState
+{
+    Playing,
+    GameOver,
+    GameWon,
+    StarPage
+}
+
 public class Program
 {
     // If you need variables in the Program class (outside functions), you must mark them as static
@@ -26,7 +35,6 @@ public class Program
     static float PlayerRadius = 25f;
     static float speed = 600f;
     static int playerHealth = 100;
-
 
     // Saw properties
     class Saw
@@ -87,9 +95,10 @@ public class Program
 
     static Enemy enemy = new Enemy(new Vector2(100, 100), 25f, 300f);
     static List<Vector2> enemyProjectiles = new List<Vector2>();
-    static float projectileSpeed = 400f;
-    static float shootInterval = 2f;
+    static float projectileSpeed = 200f;
+    static float shootInterval = 1.4f;
     static float timeSinceLastShot = 0f;
+    static GameState gameState = GameState.StarPage;
 
     static void Main()
     {
@@ -98,7 +107,7 @@ public class Program
         // Set the target frames-per-second (FPS)
         Raylib.SetTargetFPS(targetFps);
         // Setup your game. This is a function YOU define.
-      
+
         SetupLevel(currentLevel);
         // Loop so long as window should not close
         while (!Raylib.WindowShouldClose())
@@ -108,18 +117,21 @@ public class Program
             // Clear the canvas with one color
             Raylib.ClearBackground(Color.Black);
             // Your game code here. This is a function YOU define.
-
-            if (!gameOver && !gameWon)
+            switch (gameState)
             {
-                Update();
-            }
-            else if (gameOver)
-            {
-                DrawGameOver();
-            }
-            else if (gameWon)
-            {
-                DrawGameWon();
+                case GameState.Playing:
+                    Update();
+                    DrawGame();
+                    break;
+                case GameState.GameOver:
+                    DrawGameOver();
+                    break;
+                case GameState.GameWon:
+                    DrawGameWon();
+                    break;
+                case GameState.StarPage:
+                    DrawStarPage();
+                    break;
             }
 
             // Stop drawing to the canvas, begin displaying the frame
@@ -131,58 +143,56 @@ public class Program
 
     static void SetupLevel(int level)
     {
+        // Your one-time setup code here
+        if (level == 1)
         {
-            // Your one-time setup code here
-            if (level == 1)
-            {
-                // Initialize saw positions and velocities
-                saws.Add(new Saw(new Vector2(315, 340), new Vector2(20, 60), 700f, new Vector2(200, 150)));
-                saws.Add(new Saw(new Vector2(760, 175), new Vector2(20, 60), 700f, new Vector2(150, -200)));
-                saws.Add(new Saw(new Vector2(512, 650), new Vector2(20, 60), 700f, new Vector2(-100, 100)));
-                saws.Add(new Saw(new Vector2(1223, 209), new Vector2(20, 60), 700f, new Vector2(-200, 150)));
-                saws.Add(new Saw(new Vector2(800, 850), new Vector2(20, 60), 700f, new Vector2(250, -100)));
-                saws.Add(new Saw(new Vector2(200, 550), new Vector2(20, 60), 700f, new Vector2(100, 200)));
-                saws.Add(new Saw(new Vector2(800, 500), new Vector2(20, 60), 700f, new Vector2(-150, -150)));
-                saws.Add(new Saw(new Vector2(1100, 800), new Vector2(20, 60), 700f, new Vector2(200, -200)));
+            // Initialize saw positions and velocities
+            saws.Add(new Saw(new Vector2(315, 340), new Vector2(20, 60), 700f, new Vector2(200, 150)));
+            saws.Add(new Saw(new Vector2(760, 175), new Vector2(20, 60), 700f, new Vector2(150, -200)));
+            saws.Add(new Saw(new Vector2(512, 650), new Vector2(20, 60), 700f, new Vector2(-100, 100)));
+            saws.Add(new Saw(new Vector2(1223, 209), new Vector2(20, 60), 700f, new Vector2(-200, 150)));
+            saws.Add(new Saw(new Vector2(800, 850), new Vector2(20, 60), 700f, new Vector2(250, -100)));
+            saws.Add(new Saw(new Vector2(200, 550), new Vector2(20, 60), 700f, new Vector2(100, 200)));
+            saws.Add(new Saw(new Vector2(800, 500), new Vector2(20, 60), 700f, new Vector2(-150, -150)));
+            saws.Add(new Saw(new Vector2(1100, 800), new Vector2(20, 60), 700f, new Vector2(200, -200)));
 
-                // Initialize collectible positions
-                collectibles.Add(new Vector2(290, 200));
-                collectibles.Add(new Vector2(570, 580));
-                collectibles.Add(new Vector2(867, 300));
-                collectibles.Add(new Vector2(780, 100));
-                collectibles.Add(new Vector2(423, 403));
-                collectibles.Add(new Vector2(1140, 310));
-                collectibles.Add(new Vector2(707, 840));
-                collectibles.Add(new Vector2(1110, 870));
-                collectibles.Add(new Vector2(400, 700));
-                collectibles.Add(new Vector2(1000, 900));
-            }
-            else if (level == 2)
-            {
-                // Initialize saw positions and velocities for level 2
-                saws.Add(new Saw(new Vector2(315, 340), new Vector2(30, 80), 800f, new Vector2(200, 150)));
-                saws.Add(new Saw(new Vector2(760, 175), new Vector2(30, 80), 800f, new Vector2(150, -200)));
-                saws.Add(new Saw(new Vector2(512, 650), new Vector2(30, 80), 800f, new Vector2(-100, 100)));
-                saws.Add(new Saw(new Vector2(1223, 209), new Vector2(30, 80), 800f, new Vector2(-200, 150)));
-                saws.Add(new Saw(new Vector2(800, 850), new Vector2(30, 80), 800f, new Vector2(250, -100)));
-                saws.Add(new Saw(new Vector2(200, 550), new Vector2(30, 80), 800f, new Vector2(100, 200)));
-                saws.Add(new Saw(new Vector2(800, 500), new Vector2(30, 80), 800f, new Vector2(-150, -150)));
-                saws.Add(new Saw(new Vector2(1100, 800), new Vector2(30, 80), 800f, new Vector2(200, -200)));
+            // Initialize collectible positions
+            collectibles.Add(new Vector2(290, 200));
+            collectibles.Add(new Vector2(570, 580));
+            collectibles.Add(new Vector2(867, 300));
+            collectibles.Add(new Vector2(780, 100));
+            collectibles.Add(new Vector2(423, 403));
+            collectibles.Add(new Vector2(1140, 310));
+            collectibles.Add(new Vector2(707, 840));
+            collectibles.Add(new Vector2(1110, 870));
+            collectibles.Add(new Vector2(400, 700));
+            collectibles.Add(new Vector2(1000, 900));
+        }
+        else if (level == 2)
+        {
+            // Initialize saw positions and velocities for level 2
+            saws.Add(new Saw(new Vector2(315, 340), new Vector2(30, 80), 800f, new Vector2(200, 150)));
+            saws.Add(new Saw(new Vector2(760, 175), new Vector2(30, 80), 800f, new Vector2(150, -200)));
+            saws.Add(new Saw(new Vector2(512, 650), new Vector2(30, 80), 800f, new Vector2(-100, 100)));
+            saws.Add(new Saw(new Vector2(1223, 209), new Vector2(30, 80), 800f, new Vector2(-200, 150)));
+            saws.Add(new Saw(new Vector2(800, 850), new Vector2(30, 80), 800f, new Vector2(250, -100)));
+            saws.Add(new Saw(new Vector2(200, 550), new Vector2(30, 80), 800f, new Vector2(100, 200)));
+            saws.Add(new Saw(new Vector2(800, 500), new Vector2(30, 80), 800f, new Vector2(-150, -150)));
+            saws.Add(new Saw(new Vector2(1100, 800), new Vector2(30, 80), 800f, new Vector2(200, -200)));
 
-                // Initialize collectible positions for level 2
-                collectibles.Add(new Vector2(150, 150));
-                collectibles.Add(new Vector2(300, 300));
-                collectibles.Add(new Vector2(450, 450));
-                collectibles.Add(new Vector2(600, 600));
-                collectibles.Add(new Vector2(750, 750));
-                collectibles.Add(new Vector2(900, 900));
-                collectibles.Add(new Vector2(1050, 1050));
-                collectibles.Add(new Vector2(1200, 1200));
-            }
+            // Initialize collectible positions for level 2
+            collectibles.Add(new Vector2(150, 150));
+            collectibles.Add(new Vector2(300, 300));
+            collectibles.Add(new Vector2(450, 450));
+            collectibles.Add(new Vector2(600, 600));
+            collectibles.Add(new Vector2(750, 750));
+            collectibles.Add(new Vector2(900, 900));
+            collectibles.Add(new Vector2(1050, 1050));
+            collectibles.Add(new Vector2(1200, 1200));
         }
     }
 
-        static void Update()
+    static void Update()
     {
         // Your game code run each frame here
 
@@ -256,6 +266,7 @@ public class Program
                 if (playerHealth <= 0)
                 {
                     gameOver = true;
+                    gameState = GameState.GameOver;
                 }
             }
         }
@@ -292,6 +303,7 @@ public class Program
                 if (playerHealth <= 0)
                 {
                     gameOver = true;
+                    gameState = GameState.GameOver;
                 }
             }
             else if (enemyProjectiles[i].X < 0 || enemyProjectiles[i].X > screenWidth || enemyProjectiles[i].Y < 0 || enemyProjectiles[i].Y > screenHeight)
@@ -299,7 +311,6 @@ public class Program
                 enemyProjectiles.RemoveAt(i); // Remove projectiles that go off-screen
             }
         }
-
 
         // Check for collision with collectibles
         for (int i = collectibles.Count - 1; i >= 0; i--)
@@ -313,11 +324,14 @@ public class Program
                 if (collectibles.Count == 0)
                 {
                     gameWon = true;
+                    gameState = GameState.GameWon;
                 }
             }
-        
         }
+    }
 
+    static void DrawGame()
+    {
         // Draw Saws
         foreach (var saw in saws)
         {
@@ -361,7 +375,6 @@ public class Program
 
     static void DrawPlayer(Vector2 position, Color color)
     {
-
         // grey colors
         Color darkGrey = new Color(105, 105, 105, 255); // Dark grey for the body
         Color lightGrey = new Color(169, 169, 169, 255); // Light grey for the dome
@@ -415,4 +428,14 @@ public class Program
         Raylib.DrawText($"Final Score: {score}", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, Color.White);
     }
 
+    static void DrawStarPage()
+    {
+        Raylib.DrawText("SONDER", screenWidth / 2 - 100, screenHeight / 2 - 20, 40, Color.Blue);
+        Raylib.DrawText("Press ENTER to Start", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, Color.White);
+
+        if (Raylib.IsKeyPressed(KeyboardKey.Enter))
+        {
+            gameState = GameState.Playing;
+        }
+    }
 }
