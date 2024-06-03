@@ -19,7 +19,8 @@ public enum GameState
     Playing,
     GameOver,
     GameWon,
-    StarPage
+    StarPage,
+    NextLevel
 }
 
 public class Program
@@ -132,6 +133,9 @@ public class Program
                 case GameState.StarPage:
                     DrawStarPage();
                     break;
+                case GameState.NextLevel:
+                    DrawNextLevel();
+                    break;
             }
 
             // Stop drawing to the canvas, begin displaying the frame
@@ -143,6 +147,14 @@ public class Program
 
     static void SetupLevel(int level)
     {
+        // Clear previous level data
+        saws.Clear();
+        collectibles.Clear();
+
+        // Reset player properties
+        PlayerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
+        playerHealth = 100;
+
         // Your one-time setup code here
         if (level == 1)
         {
@@ -323,8 +335,15 @@ public class Program
                 // Check if all collectibles are collected
                 if (collectibles.Count == 0)
                 {
-                    gameWon = true;
-                    gameState = GameState.GameWon;
+                    if (currentLevel == 1)
+                    {
+                        gameState = GameState.NextLevel;
+                    }
+                    else
+                    {
+                        gameWon = true;
+                        gameState = GameState.GameWon;
+                    }
                 }
             }
         }
@@ -430,11 +449,24 @@ public class Program
 
     static void DrawStarPage()
     {
-        Raylib.DrawText("EPIC TITLE", screenWidth / 2 - 200, screenHeight / 2 - 40, 80, Color.Blue);
-        Raylib.DrawText("Press ENTER to Start", screenWidth / 2 - 100, screenHeight / 2 + 80, 20, Color.Magenta);
+        Raylib.DrawText("E.T. WARS", screenWidth / 2 - 200, screenHeight / 2 - 40, 80, Color.RayWhite);
+        Raylib.DrawText("Press ENTER to Start", screenWidth / 2 - 100, screenHeight / 2 + 80, 20, Color.RayWhite);
 
         if (Raylib.IsKeyPressed(KeyboardKey.Enter))
         {
+            gameState = GameState.Playing;
+        }
+    }
+
+    static void DrawNextLevel()
+    {
+        Raylib.DrawText("Level 1 Complete!", screenWidth / 2 - 100, screenHeight / 2 - 20, 40, Color.Green);
+        Raylib.DrawText("Press ENTER to Start Level 2", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, Color.White);
+
+        if (Raylib.IsKeyPressed(KeyboardKey.Enter))
+        {
+            currentLevel = 2;
+            SetupLevel(currentLevel);
             gameState = GameState.Playing;
         }
     }
