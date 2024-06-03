@@ -25,7 +25,6 @@ public enum GameState
 
 public class Program
 {
-    // If you need variables in the Program class (outside functions), you must mark them as static
     static string title = "Stupid Game"; // Window title
     static int screenWidth = 1300; // Screen width
     static int screenHeight = 1000; // Screen height
@@ -70,7 +69,7 @@ public class Program
         Color.Black
     };
 
-    static float colorChangeSpeed = 1.0f; // Speed at which colors change
+    static float colorChangeSpeed = 0.8f; // Speed at which colors change
 
     static bool playerHurt = false;
     static bool gameOver = false;
@@ -94,30 +93,38 @@ public class Program
         }
     }
 
-    static Enemy enemy = new Enemy(new Vector2(100, 100), 25f, 300f);
-    static List<Vector2> enemyProjectiles = new List<Vector2>();
-    static float projectileSpeed = 200f;
+    static List<Enemy> enemies = new List<Enemy>();
+
+    // Projectile properties
+    class Projectile
+    {
+        public Vector2 Position;
+        public float Speed;
+        public float TimeSinceFired;
+
+        public Projectile(Vector2 position, float speed)
+        {
+            Position = position;
+            Speed = speed;
+            TimeSinceFired = 0f;
+        }
+    }
+
+    static List<Projectile> enemyProjectiles = new List<Projectile>();
+    static float projectileSpeed = 200f; // Define projectile speed
     static float shootInterval = 1.4f;
     static float timeSinceLastShot = 0f;
     static GameState gameState = GameState.StarPage;
 
     static void Main()
     {
-        // Create a window to draw to. The arguments define width and height
         Raylib.InitWindow(screenWidth, screenHeight, title);
-        // Set the target frames-per-second (FPS)
         Raylib.SetTargetFPS(targetFps);
-        // Setup your game. This is a function YOU define.
-
         SetupLevel(currentLevel);
-        // Loop so long as window should not close
         while (!Raylib.WindowShouldClose())
         {
-            // Enable drawing to the canvas (window)
             Raylib.BeginDrawing();
-            // Clear the canvas with one color
             Raylib.ClearBackground(Color.Black);
-            // Your game code here. This is a function YOU define.
             switch (gameState)
             {
                 case GameState.Playing:
@@ -137,28 +144,21 @@ public class Program
                     DrawNextLevel();
                     break;
             }
-
-            // Stop drawing to the canvas, begin displaying the frame
             Raylib.EndDrawing();
         }
-        // Close the window
         Raylib.CloseWindow();
     }
 
     static void SetupLevel(int level)
     {
-        // Clear previous level data
         saws.Clear();
         collectibles.Clear();
-
-        // Reset player properties
+        enemies.Clear();
         PlayerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
         playerHealth = 100;
 
-        // Your one-time setup code here
         if (level == 1)
         {
-            // Initialize saw positions and velocities
             saws.Add(new Saw(new Vector2(315, 340), new Vector2(20, 60), 700f, new Vector2(200, 150)));
             saws.Add(new Saw(new Vector2(760, 175), new Vector2(20, 60), 700f, new Vector2(150, -200)));
             saws.Add(new Saw(new Vector2(512, 650), new Vector2(20, 60), 700f, new Vector2(-100, 100)));
@@ -168,7 +168,6 @@ public class Program
             saws.Add(new Saw(new Vector2(800, 500), new Vector2(20, 60), 700f, new Vector2(-150, -150)));
             saws.Add(new Saw(new Vector2(1100, 800), new Vector2(20, 60), 700f, new Vector2(200, -200)));
 
-            // Initialize collectible positions
             collectibles.Add(new Vector2(290, 200));
             collectibles.Add(new Vector2(570, 580));
             collectibles.Add(new Vector2(867, 300));
@@ -179,10 +178,11 @@ public class Program
             collectibles.Add(new Vector2(1110, 870));
             collectibles.Add(new Vector2(400, 700));
             collectibles.Add(new Vector2(1000, 900));
+
+            enemies.Add(new Enemy(new Vector2(100, 100), 25f, 300f));
         }
         else if (level == 2)
         {
-            // Initialize saw positions and velocities for level 2
             saws.Add(new Saw(new Vector2(315, 340), new Vector2(30, 80), 800f, new Vector2(200, 150)));
             saws.Add(new Saw(new Vector2(760, 175), new Vector2(30, 80), 800f, new Vector2(150, -200)));
             saws.Add(new Saw(new Vector2(512, 650), new Vector2(30, 80), 800f, new Vector2(-100, 100)));
@@ -192,7 +192,6 @@ public class Program
             saws.Add(new Saw(new Vector2(800, 500), new Vector2(30, 80), 800f, new Vector2(-150, -150)));
             saws.Add(new Saw(new Vector2(1100, 800), new Vector2(30, 80), 800f, new Vector2(200, -200)));
 
-            // Initialize collectible positions for level 2
             collectibles.Add(new Vector2(150, 150));
             collectibles.Add(new Vector2(300, 300));
             collectibles.Add(new Vector2(450, 450));
@@ -201,14 +200,14 @@ public class Program
             collectibles.Add(new Vector2(900, 900));
             collectibles.Add(new Vector2(1050, 1050));
             collectibles.Add(new Vector2(1200, 1200));
+
+            enemies.Add(new Enemy(new Vector2(100, 100), 25f, 300f));
+            enemies.Add(new Enemy(new Vector2(1200, 100), 25f, 300f));
         }
     }
 
     static void Update()
     {
-        // Your game code run each frame here
-
-        // Player movement
         float deltaTime = Raylib.GetFrameTime();
 
         if (Raylib.IsKeyDown(KeyboardKey.W))
@@ -228,7 +227,6 @@ public class Program
             PlayerPosition.X += speed * deltaTime;
         }
 
-        // Boundary checks
         if (PlayerPosition.X - PlayerRadius < 0)
         {
             PlayerPosition.X = PlayerRadius;
@@ -246,21 +244,17 @@ public class Program
             PlayerPosition.Y = screenHeight - PlayerRadius;
         }
 
-        // Saw rotation and collision
         playerHurt = false;
         foreach (var saw in saws)
         {
-            // Rotate the saw
             saw.Rotation += saw.RotationSpeed * deltaTime;
             if (saw.Rotation > 360f)
             {
                 saw.Rotation -= 360f;
             }
 
-            // Move the saw
             saw.Position += saw.Velocity * deltaTime;
 
-            // Bounce the saw off the screen edges
             if (saw.Position.X - saw.Size.X / 2 < 0 || saw.Position.X + saw.Size.X / 2 > screenWidth)
             {
                 saw.Velocity.X = -saw.Velocity.X;
@@ -270,7 +264,6 @@ public class Program
                 saw.Velocity.Y = -saw.Velocity.Y;
             }
 
-            // Check collision with player
             if (Raylib.CheckCollisionCircleRec(PlayerPosition, PlayerRadius, new Rectangle(saw.Position.X - saw.Size.X / 2, saw.Position.Y - saw.Size.Y / 2, saw.Size.X, saw.Size.Y)))
             {
                 playerHurt = true;
@@ -283,32 +276,50 @@ public class Program
             }
         }
 
-        // Enemy movement
-        enemy.Position += enemy.Velocity * deltaTime;
-
-        // Bounce the enemy off the screen edges
-        if (enemy.Position.X - enemy.Radius < 0 || enemy.Position.X + enemy.Radius > screenWidth)
+        foreach (var enemy in enemies)
         {
-            enemy.Velocity.X = -enemy.Velocity.X;
-        }
-        if (enemy.Position.Y - enemy.Radius < 0 || enemy.Position.Y + enemy.Radius > screenHeight)
-        {
-            enemy.Velocity.Y = -enemy.Velocity.Y;
+            enemy.Position += enemy.Velocity * deltaTime;
+
+            if (enemy.Position.X - enemy.Radius < 0 || enemy.Position.X + enemy.Radius > screenWidth)
+            {
+                enemy.Velocity.X = -enemy.Velocity.X;
+            }
+            if (enemy.Position.Y - enemy.Radius < 0 || enemy.Position.Y + enemy.Radius > screenHeight)
+            {
+                enemy.Velocity.Y = -enemy.Velocity.Y;
+            }
         }
 
-        // Enemy shooting
         timeSinceLastShot += deltaTime;
         if (timeSinceLastShot >= shootInterval)
         {
-            ShootAtPlayer();
+            foreach (var enemy in enemies)
+            {
+                ShootAtPlayer(enemy.Position);
+            }
             timeSinceLastShot = 0f;
         }
 
-        // Update enemy projectiles
         for (int i = enemyProjectiles.Count - 1; i >= 0; i--)
         {
-            enemyProjectiles[i] += Vector2.Normalize(PlayerPosition - enemyProjectiles[i]) * projectileSpeed * deltaTime;
-            if (Raylib.CheckCollisionCircles(PlayerPosition, PlayerRadius, enemyProjectiles[i], 5f))
+            enemyProjectiles[i].Position += Vector2.Normalize(PlayerPosition - enemyProjectiles[i].Position) * enemyProjectiles[i].Speed * deltaTime;
+            enemyProjectiles[i].TimeSinceFired += deltaTime;
+
+            if (enemyProjectiles[i].TimeSinceFired >= 3f)
+            {
+                // Explode the projectile
+                if (Raylib.CheckCollisionCircles(PlayerPosition, PlayerRadius, enemyProjectiles[i].Position, 50f))
+                {
+                    playerHealth -= 20; // Decrease health when hit by explosion
+                    if (playerHealth <= 0)
+                    {
+                        gameOver = true;
+                        gameState = GameState.GameOver;
+                    }
+                }
+                enemyProjectiles.RemoveAt(i);
+            }
+            else if (Raylib.CheckCollisionCircles(PlayerPosition, PlayerRadius, enemyProjectiles[i].Position, 5f))
             {
                 playerHealth -= 10; // Decrease health when hit by projectile
                 enemyProjectiles.RemoveAt(i);
@@ -318,13 +329,12 @@ public class Program
                     gameState = GameState.GameOver;
                 }
             }
-            else if (enemyProjectiles[i].X < 0 || enemyProjectiles[i].X > screenWidth || enemyProjectiles[i].Y < 0 || enemyProjectiles[i].Y > screenHeight)
+            else if (enemyProjectiles[i].Position.X < 0 || enemyProjectiles[i].Position.X > screenWidth || enemyProjectiles[i].Position.Y < 0 || enemyProjectiles[i].Position.Y > screenHeight)
             {
                 enemyProjectiles.RemoveAt(i); // Remove projectiles that go off-screen
             }
         }
 
-        // Check for collision with collectibles
         for (int i = collectibles.Count - 1; i >= 0; i--)
         {
             if (Raylib.CheckCollisionCircles(PlayerPosition, PlayerRadius, collectibles[i], collectibleRadius))
@@ -332,7 +342,6 @@ public class Program
                 collectibles.RemoveAt(i); // Remove collectible if collected
                 score++; // Increment score
 
-                // Check if all collectibles are collected
                 if (collectibles.Count == 0)
                 {
                     if (currentLevel == 1)
@@ -342,8 +351,7 @@ public class Program
                     }
                     else if (currentLevel == 2)
                     {
-                        gameWon = true;
-                        gameState = GameState.GameWon;
+                        gameState = GameState.GameWon; // Ensure state transition
                         System.Console.WriteLine("Game Won!");
                     }
                 }
@@ -353,7 +361,6 @@ public class Program
 
     static void DrawGame()
     {
-        // Draw Saws
         foreach (var saw in saws)
         {
             Raylib.DrawRectanglePro(
@@ -364,19 +371,18 @@ public class Program
            );
         }
 
-        // Draw player
         DrawPlayer(PlayerPosition, playerHurt ? Color.Red : Color.RayWhite);
 
-        // Draw enemy
-        DrawPlayer(enemy.Position, Color.Blue);
-
-        // Draw enemy projectiles
-        foreach (var projectile in enemyProjectiles)
+        foreach (var enemy in enemies)
         {
-            Raylib.DrawCircleV(projectile, 10f, Color.Red);
+            DrawPlayer(enemy.Position, Color.Blue);
         }
 
-        // Draw collectibles
+        foreach (var projectile in enemyProjectiles)
+        {
+            Raylib.DrawCircleV(projectile.Position, 10f, Color.Red);
+        }
+
         float elapsedTime = (float)Raylib.GetTime();
         int colorIndex = (int)(elapsedTime * colorChangeSpeed) % collectibleColors.Count;
         Color currentColor = collectibleColors[colorIndex];
@@ -389,29 +395,25 @@ public class Program
         DrawHealthBar();
     }
 
-    static void ShootAtPlayer()
+    static void ShootAtPlayer(Vector2 enemyPosition)
     {
-        enemyProjectiles.Add(enemy.Position);
+        enemyProjectiles.Add(new Projectile(enemyPosition, projectileSpeed));
     }
 
     static void DrawPlayer(Vector2 position, Color color)
     {
-        // grey colors
         Color darkGrey = new Color(105, 105, 105, 255); // Dark grey for the body
         Color lightGrey = new Color(169, 169, 169, 255); // Light grey for the dome
 
-        // main body(ellipse)
         float ufoWidth = PlayerRadius * 2.5f;
         float ufoHeight = PlayerRadius * 1.2f;
         Raylib.DrawEllipse((int)position.X, (int)position.Y, (int)ufoWidth, (int)ufoHeight, darkGrey);
 
-        // (ellipse)
         float domeWidth = PlayerRadius * 1.5f;
         float domeHeight = PlayerRadius * 0.8f;
         Vector2 domePosition = new Vector2(position.X, position.Y - PlayerRadius * 0.5f);
         Raylib.DrawEllipse((int)domePosition.X, (int)domePosition.Y, (int)domeWidth, (int)domeHeight, lightGrey);
 
-        // (line)
         Vector2 domeBaseLeft = new Vector2(domePosition.X - domeWidth / 2, domePosition.Y);
         Vector2 domeBaseRight = new Vector2(domePosition.X + domeWidth / 2, domePosition.Y);
         Raylib.DrawLineEx(domeBaseLeft, domeBaseRight, 2, lightGrey);
@@ -429,10 +431,8 @@ public class Program
         int barX = 10;
         int barY = 100;
 
-        // Draw background
         Raylib.DrawRectangle(barX, barY, barWidth, barHeight, Color.Red);
 
-        // Draw health
         int healthWidth = (int)((playerHealth / 100.0f) * barWidth);
         Raylib.DrawRectangle(barX, barY, healthWidth, barHeight, Color.Green);
     }
