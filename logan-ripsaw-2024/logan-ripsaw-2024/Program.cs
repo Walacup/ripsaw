@@ -338,11 +338,13 @@ public class Program
                     if (currentLevel == 1)
                     {
                         gameState = GameState.NextLevel;
+                        System.Console.WriteLine("Level 1 Complete!");
                     }
-                    else
+                    else if (currentLevel == 2)
                     {
                         gameWon = true;
                         gameState = GameState.GameWon;
+                        System.Console.WriteLine("Game Won!");
                     }
                 }
             }
@@ -437,37 +439,51 @@ public class Program
 
     static void DrawGameOver()
     {
-        Raylib.DrawText("Game Over", screenWidth / 2 - 100, screenHeight / 2 - 20, 40, Color.Red);
-        Raylib.DrawText($"Final Score: {score}", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, Color.White);
+        int textWidth = Raylib.MeasureText("Game Over", 40);
+        Raylib.DrawText("Game Over", screenWidth / 2 - textWidth / 2, screenHeight / 2 - 20, 40, Color.Red);
+
+        textWidth = Raylib.MeasureText($"Final Score: {score}", 20);
+        Raylib.DrawText($"Final Score: {score}", screenWidth / 2 - textWidth / 2, screenHeight / 2 + 20, 20, Color.White);
     }
 
     static void DrawGameWon()
     {
-        Raylib.DrawText("You Win!", screenWidth / 2 - 100, screenHeight / 2 - 20, 40, Color.Green);
-        Raylib.DrawText($"Final Score: {score}", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, Color.White);
+        int textWidth = Raylib.MeasureText("You Win!", 40);
+        Raylib.DrawText("You Win!", screenWidth / 2 - textWidth / 2, screenHeight / 2 - 20, 40, Color.Green);
+
+        textWidth = Raylib.MeasureText($"Final Score: {score}", 20);
+        Raylib.DrawText($"Final Score: {score}", screenWidth / 2 - textWidth / 2, screenHeight / 2 + 20, 20, Color.White);
     }
 
     static void DrawStarPage()
     {
-        Raylib.DrawText("E.T. WARS", screenWidth / 2 - 200, screenHeight / 2 - 40, 80, Color.RayWhite);
-        Raylib.DrawText("Press ENTER to Start", screenWidth / 2 - 100, screenHeight / 2 + 80, 20, Color.RayWhite);
+        int textWidth = Raylib.MeasureText("RIPSAW", 80);
+        Raylib.DrawText("RIPSAW", screenWidth / 2 - textWidth / 2, screenHeight / 2 - 80, 80, Color.RayWhite);
+
+        textWidth = Raylib.MeasureText("Press ENTER to Start", 20);
+        Raylib.DrawText("Press ENTER to Start", screenWidth / 2 - textWidth / 2, screenHeight / 2 + 80, 20, Color.RayWhite);
 
         if (Raylib.IsKeyPressed(KeyboardKey.Enter))
         {
             gameState = GameState.Playing;
+            System.Console.WriteLine("Game Started");
         }
     }
 
     static void DrawNextLevel()
     {
-        Raylib.DrawText("Level 1 Complete!", screenWidth / 2 - 100, screenHeight / 2 - 20, 40, Color.Green);
-        Raylib.DrawText("Press ENTER to Start Level 2", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, Color.White);
+        int textWidth = Raylib.MeasureText("Level 1 Complete!", 40);
+        Raylib.DrawText("Level 1 Complete!", screenWidth / 2 - textWidth / 2, screenHeight / 2 - 20, 40, Color.Green);
+
+        textWidth = Raylib.MeasureText("Press ENTER to Start Level 2", 20);
+        Raylib.DrawText("Press ENTER to Start Level 2", screenWidth / 2 - textWidth / 2, screenHeight / 2 + 20, 20, Color.White);
 
         if (Raylib.IsKeyPressed(KeyboardKey.Enter))
         {
             currentLevel = 2;
             SetupLevel(currentLevel);
             gameState = GameState.Playing;
+            System.Console.WriteLine("Level 2 Started");
         }
     }
 }
