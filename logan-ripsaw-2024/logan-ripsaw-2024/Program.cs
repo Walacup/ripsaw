@@ -409,11 +409,11 @@ public class Program
         int barY = 100;
 
         // Draw background
-        Raylib.DrawRectangle(barX, barY, barWidth, barHeight, Color.Gray);
+        Raylib.DrawRectangle(barX, barY, barWidth, barHeight, Color.Red);
 
         // Draw health
         int healthWidth = (int)((playerHealth / 100.0f) * barWidth);
-        Raylib.DrawRectangle(barX, barY, healthWidth, barHeight, Color.Red);
+        Raylib.DrawRectangle(barX, barY, healthWidth, barHeight, Color.Green);
     }
 
     static void DrawGameOver()
@@ -430,8 +430,8 @@ public class Program
 
     static void DrawStarPage()
     {
-        Raylib.DrawText("SONDER", screenWidth / 2 - 100, screenHeight / 2 - 20, 40, Color.Blue);
-        Raylib.DrawText("Press ENTER to Start", screenWidth / 2 - 100, screenHeight / 2 + 20, 20, Color.White);
+        Raylib.DrawText("EPIC TITLE", screenWidth / 2 - 200, screenHeight / 2 - 40, 80, Color.Blue);
+        Raylib.DrawText("Press ENTER to Start", screenWidth / 2 - 100, screenHeight / 2 + 80, 20, Color.Magenta);
 
         if (Raylib.IsKeyPressed(KeyboardKey.Enter))
         {
